@@ -18,4 +18,4 @@ BASE_DOMAIN = "com"
 # 라우팅 설정
 [[routes]]
 pattern = "jiwungum.dpdns.org/api/*"
-zone_name = "com"
+zone_name = "jiwungum.dpdns.org"

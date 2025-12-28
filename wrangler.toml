@@ -1,16 +1,31 @@
-name = "domain-register-api"
-main = "register.js"
+name = "free-domain"
 compatibility_date = "2024-01-01"
+pages_build_output_dir = "./"
 
-# [중요] HTML 파일들을 워커와 함께 업로드하고 제공하기 위한 설정
-[assets]
-directory = "."
-binding = "ASSETS"
+[site]
+bucket = "./"
 
-# KV Storage (기존 설정 유지)
-[[kv_namespaces]]
-binding = "DOMAIN_LOG"
-id = "55ea199daf1b46f1b7869d544ed10c36"
+# Cloudflare Pages 설정
+[build]
+command = ""
+cwd = ""
+watch_dir = ""
 
+# 환경 변수 (선택사항)
 [vars]
-BASE_DOMAIN = "com"
+ENVIRONMENT = "production"
+
+# 개발 환경 설정
+[env.development]
+name = "free-domain-dev"
+vars = { ENVIRONMENT = "development" }
+
+# 프로덕션 환경 설정
+[env.production]
+name = "free-domain"
+vars = { ENVIRONMENT = "production" }
+
+# 커스텀 도메인 설정 (선택사항)
+# routes = [
+#   { pattern = "domains.yourdomain.com", custom_domain = true }
+# ]

@@ -3,373 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>무료 도메인 발급 서비스</title>
+    <title>무료 도메인 발급</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        header {
-            text-align: center;
-            color: white;
-            margin-bottom: 30px;
-        }
-
-        header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-
-        header p {
-            font-size: 1.1em;
-            opacity: 0.9;
-        }
-
-        .card {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #333;
-        }
-
-        .input-group {
-            display: flex;
-            align-items: center;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            overflow: hidden;
-            transition: border-color 0.3s;
-        }
-
-        .input-group:focus-within {
-            border-color: #667eea;
-        }
-
-        .input-group input {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            font-size: 16px;
-            outline: none;
-        }
-
-        .domain-suffix {
-            padding: 12px 15px;
-            background: #f5f5f5;
-            color: #666;
-            font-weight: 500;
-            white-space: nowrap;
-        }
-
-        input[type="text"],
-        input[type="email"],
-        select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-
-        input:focus,
-        select:focus {
-            border-color: #667eea;
-            outline: none;
-        }
-
-        small {
-            display: block;
-            margin-top: 5px;
-            color: #666;
-            font-size: 0.85em;
-        }
-
-        button {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        button:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .result {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 8px;
-            display: none;
-        }
-
-        .result.success {
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
-            display: block;
-        }
-
-        .result.error {
-            background: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-            display: block;
-        }
-
-        .info-section {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        }
-
-        .info-section h3 {
-            color: #667eea;
-            margin-bottom: 15px;
-        }
-
-        .info-section ol {
-            margin-left: 20px;
-            line-height: 1.8;
-        }
-
-        .code-block {
-            background: #f5f5f5;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 10px;
-            font-family: 'Courier New', monospace;
-        }
-
-        .code-block code {
-            color: #d63384;
-            font-size: 0.95em;
-        }
-
-        .loader {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        /* 기존 스타일 유지하되 필요한 부분만 추가 */
+        body { font-family: sans-serif; background: linear-gradient(135deg, #667eea, #764ba2); padding: 20px; min-height: 100vh; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        h1 { text-align: center; color: #333; }
+        input, select, button { width: 100%; padding: 12px; margin-bottom: 10px; border: 2px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        button { background: #667eea; color: white; border: none; font-weight: bold; cursor: pointer; }
+        button:hover { background: #5a6fd6; }
+        .result { padding: 15px; border-radius: 8px; margin-top: 20px; display: none; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>🌐 무료 서브도메인 발급</h1>
-            <p>귀하의 프로젝트를 위한 무료 서브도메인을 즉시 발급받으세요</p>
-        </header>
-
-        <div class="card">
-            <form id="domainForm">
-                <div class="form-group">
-                    <label for="subdomain">원하는 서브도메인 이름</label>
-                    <div class="input-group">
-                        <input 
-                            type="text" 
-                            id="subdomain" 
-                            placeholder="mysite" 
-                            pattern="[a-z0-9-]+"
-                            required
-                        >
-                        <span class="domain-suffix" id="domainSuffix">.yourdomain.com</span>
-                    </div>
-                    <small>영문 소문자, 숫자, 하이픈(-)만 사용 가능</small>
-                </div>
-
-                <div class="form-group">
-                    <label for="recordType">레코드 타입</label>
-                    <select id="recordType" required>
-                        <option value="A">A (IPv4 주소)</option>
-                        <option value="AAAA">AAAA (IPv6 주소)</option>
-                        <option value="CNAME">CNAME (다른 도메인)</option>
-                        <option value="NS">NS (네임서버)</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="recordValue">값 (IP 주소 또는 도메인)</label>
-                    <input 
-                        type="text" 
-                        id="recordValue" 
-                        placeholder="예: 192.0.2.1 또는 ns1.example.com"
-                        required
-                    >
-                    <small id="recordHint">네임서버를 통한 호스팅의 경우 NS 레코드를 선택하세요</small>
-                </div>
-
-                <div class="form-group">
-                    <label for="email">이메일 (선택사항)</label>
-                    <input 
-                        type="email" 
-                        id="email" 
-                        placeholder="contact@example.com"
-                    >
-                </div>
-
-                <button type="submit" id="submitBtn">
-                    도메인 발급받기
-                </button>
-            </form>
-
-            <div id="result" class="result"></div>
-        </div>
-
-        <div class="info-section">
-            <h3>📋 사용 방법</h3>
-            <ol>
-                <li>원하는 서브도메인 이름 입력</li>
-                <li>레코드 타입 선택 (네임서버 사용시 NS 선택)</li>
-                <li>네임서버 주소 또는 IP 주소 입력</li>
-                <li>발급 완료 후 최대 24시간 이내 전파</li>
-            </ol>
-        </div>
-
-        <div class="info-section">
-            <h3>⚙️ 네임서버 설정 예시</h3>
-            <div class="code-block">
-                <p><strong>NS 레코드 사용:</strong></p>
-                <code>mysite.yourdomain.com → ns1.myhosting.com</code>
-                <p style="margin-top: 10px;">이후 ns1.myhosting.com에서 A, CNAME 등 모든 DNS 관리</p>
+        <h1>🌐 무료 도메인 발급</h1>
+        <form id="domainForm">
+            <label>서브도메인</label>
+            <div style="display:flex; gap:5px; margin-bottom:10px;">
+                <input type="text" id="subdomain" placeholder="mysite" required>
+                <input type="text" value=".yourdomain.com" readonly style="width: 150px; background: #eee;">
             </div>
-        </div>
+
+            <label>레코드 타입</label>
+            <select id="recordType">
+                <option value="A">A (IPv4)</option>
+                <option value="AAAA">AAAA (IPv6)</option>
+                <option value="CNAME">CNAME</option>
+                <option value="NS">NS</option>
+            </select>
+
+            <label>값 입력 (최대 2개)</label>
+            <input type="text" id="val1" placeholder="값 1 (예: 192.168.0.1) - 필수" required>
+            <input type="text" id="val2" placeholder="값 2 (선택사항)">
+
+            <label>이메일 (선택)</label>
+            <input type="email" id="email" placeholder="contact@example.com">
+
+            <button type="submit" id="submitBtn">발급받기</button>
+        </form>
+        <div id="result" class="result"></div>
     </div>
 
     <script>
-        // 설정 (여기서 도메인과 API 엔드포인트 변경)
-        const CONFIG = {
-            domain: 'yourdomain.com', // 귀하의 도메인으로 변경
-            apiEndpoint: '/api/register' // Cloudflare Workers 엔드포인트
-        };
-
-        document.getElementById('domainSuffix').textContent = `.${CONFIG.domain}`;
-
-        // 레코드 타입 변경시 힌트 업데이트
-        document.getElementById('recordType').addEventListener('change', function() {
-            const hints = {
-                'A': 'IPv4 주소를 입력하세요 (예: 192.0.2.1)',
-                'AAAA': 'IPv6 주소를 입력하세요 (예: 2001:db8::1)',
-                'CNAME': '대상 도메인을 입력하세요 (예: example.com)',
-                'NS': '네임서버 주소를 입력하세요 (예: ns1.example.com)'
-            };
-            document.getElementById('recordHint').textContent = hints[this.value];
-        });
-
-        // 폼 제출 처리
-        document.getElementById('domainForm').addEventListener('submit', async function(e) {
+        document.getElementById('domainForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const result = document.getElementById('result');
             
-            const submitBtn = document.getElementById('submitBtn');
-            const resultDiv = document.getElementById('result');
-            const subdomain = document.getElementById('subdomain').value.toLowerCase();
-            const recordType = document.getElementById('recordType').value;
-            const recordValue = document.getElementById('recordValue').value;
-            const email = document.getElementById('email').value;
+            btn.disabled = true;
+            btn.textContent = '처리 중...';
+            result.style.display = 'none';
 
-            // 버튼 비활성화 및 로딩 표시
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="loader"></span> 처리 중...';
-            resultDiv.style.display = 'none';
+            // 입력값 정리
+            const val1 = document.getElementById('val1').value.trim();
+            const val2 = document.getElementById('val2').value.trim();
+            const recordValues = [val1, val2].filter(v => v !== "");
 
             try {
-                const response = await fetch(CONFIG.apiEndpoint, {
+                const res = await fetch('/api/register', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        subdomain,
-                        recordType,
-                        recordValue,
-                        email
+                        subdomain: document.getElementById('subdomain').value,
+                        recordType: document.getElementById('recordType').value,
+                        recordValues: recordValues,
+                        email: document.getElementById('email').value
                     })
                 });
-
-                const data = await response.json();
-
-                if (response.ok && data.success) {
-                    resultDiv.className = 'result success';
-                    resultDiv.innerHTML = `
-                        <h4>✅ 도메인 발급 성공!</h4>
-                        <p><strong>${subdomain}.${CONFIG.domain}</strong></p>
-                        <p>레코드 타입: ${recordType}</p>
-                        <p>값: ${recordValue}</p>
-                        <p style="margin-top: 10px; font-size: 0.9em;">DNS 전파까지 최대 24시간이 소요될 수 있습니다.</p>
-                    `;
-                    document.getElementById('domainForm').reset();
+                const data = await res.json();
+                
+                result.style.display = 'block';
+                if (data.success) {
+                    result.className = 'result success';
+                    result.innerHTML = `✅ 성공! <b>${document.getElementById('subdomain').value}.yourdomain.com</b>이(가) 등록되었습니다.`;
                 } else {
-                    throw new Error(data.error || '도메인 발급에 실패했습니다.');
+                    throw new Error(data.error);
                 }
-            } catch (error) {
-                resultDiv.className = 'result error';
-                resultDiv.innerHTML = `
-                    <h4>❌ 오류 발생</h4>
-                    <p>${error.message}</p>
-                `;
+            } catch (err) {
+                result.className = 'result error';
+                result.innerHTML = `❌ 오류: ${err.message}`;
+                result.style.display = 'block';
             } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = '도메인 발급받기';
-                resultDiv.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = '발급받기';
             }
-        });
-
-        // 입력값 검증
-        document.getElementById('subdomain').addEventListener('input', function() {
-            this.value = this.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
         });
     </script>
 </body>
-  </html>
+</html>

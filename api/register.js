@@ -5,7 +5,7 @@
 const CONFIG = {
   CLOUDFLARE_API_TOKEN: 'your_api_token_here',  // Cloudflare API 토큰
   ZONE_ID: 'your_zone_id_here',                 // Cloudflare Zone ID
-  BASE_DOMAIN: 'yourdomain.com',                // 귀하의 도메인
+  BASE_DOMAIN: 'com',                // 귀하의 도메인
   ALLOWED_ORIGINS: [
     'https://jiwungum.dpdns.org',
     'https://www.jiwungum.dpdns.org'

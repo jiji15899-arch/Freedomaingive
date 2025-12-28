@@ -1,0 +1,262 @@
+name: 도메인 자동 처리
+
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  process-domain-request:
+    runs-on: ubuntu-latest
+    if: contains(github.event.issue.labels.*.name, 'domain-request')
+    
+    permissions:
+      issues: write
+      contents: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Parse issue
+        id: parse
+        run: |
+          ISSUE_BODY="${{ github.event.issue.body }}"
+          ISSUE_TITLE="${{ github.event.issue.title }}"
+          
+          echo "Full issue title: $ISSUE_TITLE"
+          echo "Full issue body: $ISSUE_BODY"
+          
+          # 도메인 이름 추출
+          DOMAIN=$(echo "$ISSUE_TITLE" | grep -oP '\[도메인 신청\] \K[a-z0-9.-]+' || echo "")
+          echo "Extracted domain: $DOMAIN"
+          echo "domain=$DOMAIN" >> $GITHUB_OUTPUT
+          
+          # 네임서버 추출
+          NS1=$(echo "$ISSUE_BODY" | grep -oP 'NS1: \K[^\s]+' | head -1 || echo "")
+          NS2=$(echo "$ISSUE_BODY" | grep -oP 'NS2: \K[^\s]+' | head -1 || echo "")
+          NS3=$(echo "$ISSUE_BODY" | grep -oP 'NS3: \K[^\s]+' | head -1 || echo "")
+          NS4=$(echo "$ISSUE_BODY" | grep -oP 'NS4: \K[^\s]+' | head -1 || echo "")
+          
+          echo "NS1: $NS1"
+          echo "NS2: $NS2"
+          echo "NS3: $NS3"
+          echo "NS4: $NS4"
+          
+          echo "ns1=$NS1" >> $GITHUB_OUTPUT
+          echo "ns2=$NS2" >> $GITHUB_OUTPUT
+          echo "ns3=$NS3" >> $GITHUB_OUTPUT
+          echo "ns4=$NS4" >> $GITHUB_OUTPUT
+
+      - name: Validate domain
+        id: validate
+        run: |
+          DOMAIN="${{ steps.parse.outputs.domain }}"
+          
+          echo "Validating domain: $DOMAIN"
+          
+          # 도메인이 비어있는지 확인
+          if [ -z "$DOMAIN" ]; then
+            echo "valid=false" >> $GITHUB_OUTPUT
+            echo "error=도메인을 찾을 수 없습니다" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          # 도메인 형식 검증
+          if [[ ! "$DOMAIN" =~ ^[a-z0-9][a-z0-9-]*\.[a-z0-9.-]+$ ]]; then
+            echo "valid=false" >> $GITHUB_OUTPUT
+            echo "error=잘못된 도메인 형식입니다" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          # 네임서버 확인
+          NS1="${{ steps.parse.outputs.ns1 }}"
+          NS2="${{ steps.parse.outputs.ns2 }}"
+          
+          if [ -z "$NS1" ] || [ -z "$NS2" ]; then
+            echo "valid=false" >> $GITHUB_OUTPUT
+            echo "error=최소 2개의 네임서버가 필요합니다" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          # 중복 확인
+          if [ -f "domains.json" ]; then
+            if grep -q "\"$DOMAIN\"" domains.json; then
+              echo "valid=false" >> $GITHUB_OUTPUT
+              echo "error=이미 사용중인 도메인입니다" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+          fi
+          
+          echo "valid=true" >> $GITHUB_OUTPUT
+          echo "Domain validation passed!"
+
+      - name: Create Cloudflare DNS records
+        if: steps.validate.outputs.valid == 'true'
+        id: cloudflare
+        run: |
+          DOMAIN="${{ steps.parse.outputs.domain }}"
+          NS1="${{ steps.parse.outputs.ns1 }}"
+          NS2="${{ steps.parse.outputs.ns2 }}"
+          NS3="${{ steps.parse.outputs.ns3 }}"
+          NS4="${{ steps.parse.outputs.ns4 }}"
+          
+          # Cloudflare API 정보
+          ZONE_ID="d5c67a7f0c791d39dbce41c3aa5d2221"
+          API_TOKEN="55ea199daf1b46f1b7869d544ed10c36"
+          
+          echo "Creating DNS records for: $DOMAIN"
+          
+          # NS 레코드 생성 함수
+          create_ns_record() {
+            local ns_value=$1
+            local ns_name=$2
+            
+            if [ -n "$ns_value" ]; then
+              echo "Creating NS record: $ns_name -> $ns_value"
+              
+              RESPONSE=$(curl -s -X POST "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records" \
+                -H "Authorization: Bearer $API_TOKEN" \
+                -H "Content-Type: application/json" \
+                --data "{
+                  \"type\": \"NS\",
+                  \"name\": \"$DOMAIN\",
+                  \"content\": \"$ns_value\",
+                  \"ttl\": 3600
+                }")
+              
+              echo "Response: $RESPONSE"
+              
+              # 성공 여부 확인
+              if echo "$RESPONSE" | grep -q '"success":true'; then
+                echo "✓ $ns_name created successfully"
+              else
+                echo "✗ Failed to create $ns_name"
+                echo "$RESPONSE"
+              fi
+            fi
+          }
+          
+          # 각 네임서버 레코드 생성
+          create_ns_record "$NS1" "NS1"
+          create_ns_record "$NS2" "NS2"
+          create_ns_record "$NS3" "NS3"
+          create_ns_record "$NS4" "NS4"
+          
+          echo "success=true" >> $GITHUB_OUTPUT
+
+      - name: Update domains.json
+        if: steps.validate.outputs.valid == 'true' && steps.cloudflare.outputs.success == 'true'
+        run: |
+          DOMAIN="${{ steps.parse.outputs.domain }}"
+          NS1="${{ steps.parse.outputs.ns1 }}"
+          NS2="${{ steps.parse.outputs.ns2 }}"
+          NS3="${{ steps.parse.outputs.ns3 }}"
+          NS4="${{ steps.parse.outputs.ns4 }}"
+          
+          echo "Updating domains.json with: $DOMAIN"
+          
+          # jq 설치
+          sudo apt-get update && sudo apt-get install -y jq
+          
+          # domains.json이 없으면 생성
+          if [ ! -f "domains.json" ]; then
+            echo "[]" > domains.json
+          fi
+          
+          # 새 도메인 추가
+          NAMESERVERS="[\"$NS1\",\"$NS2\""
+          [ -n "$NS3" ] && NAMESERVERS="$NAMESERVERS,\"$NS3\""
+          [ -n "$NS4" ] && NAMESERVERS="$NAMESERVERS,\"$NS4\""
+          NAMESERVERS="$NAMESERVERS]"
+          
+          echo "Nameservers JSON: $NAMESERVERS"
+          
+          jq --arg domain "$DOMAIN" \
+             --argjson ns "$NAMESERVERS" \
+             --arg date "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
+             --arg issue "${{ github.event.issue.number }}" \
+             '. += [{
+               "domain": $domain,
+               "nameservers": $ns,
+               "created": $date,
+               "status": "active",
+               "issue": $issue
+             }]' domains.json > domains.json.tmp
+          
+          mv domains.json.tmp domains.json
+          
+          echo "domains.json updated successfully"
+          cat domains.json
+
+      - name: Commit changes
+        if: steps.validate.outputs.valid == 'true' && steps.cloudflare.outputs.success == 'true'
+        run: |
+          git config user.name "Domain Bot"
+          git config user.email "bot@github.com"
+          git add domains.json
+          git commit -m "Add domain: ${{ steps.parse.outputs.domain }}"
+          git push
+
+      - name: Update issue - Success
+        if: steps.validate.outputs.valid == 'true' && steps.cloudflare.outputs.success == 'true'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const domain = '${{ steps.parse.outputs.domain }}';
+            const ns1 = '${{ steps.parse.outputs.ns1 }}';
+            const ns2 = '${{ steps.parse.outputs.ns2 }}';
+            const ns3 = '${{ steps.parse.outputs.ns3 }}';
+            const ns4 = '${{ steps.parse.outputs.ns4 }}';
+            
+            let nsInfo = `- NS1: ${ns1}\n- NS2: ${ns2}\n`;
+            if (ns3) nsInfo += `- NS3: ${ns3}\n`;
+            if (ns4) nsInfo += `- NS4: ${ns4}\n`;
+            
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## ✅ 도메인 발급 완료!\n\n` +
+                    `**도메인**: \`${domain}\`\n\n` +
+                    `**설정된 네임서버**:\n${nsInfo}\n` +
+                    `**DNS 전파 시간**: 최대 24-48시간\n\n` +
+                    `네임서버에서 호스팅 설정을 완료하시면 바로 사용 가능합니다!\n\n` +
+                    `---\n` +
+                    `발급 완료: ${new Date().toLocaleString('ko-KR', {timeZone: 'Asia/Seoul'})}`
+            });
+            
+            await github.rest.issues.update({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'closed',
+              labels: ['domain-request', 'approved']
+            });
+
+      - name: Update issue - Failed
+        if: steps.validate.outputs.valid == 'false' || steps.cloudflare.outputs.success != 'true'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const error = '${{ steps.validate.outputs.error }}' || '도메인 생성 중 오류가 발생했습니다';
+            
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## ❌ 도메인 신청 거부\n\n` +
+                    `**사유**: ${error}\n\n` +
+                    `다시 신청해주시기 바랍니다.\n\n` +
+                    `---\n` +
+                    `처리 시간: ${new Date().toLocaleString('ko-KR', {timeZone: 'Asia/Seoul'})}`
+            });
+            
+            await github.rest.issues.update({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'closed',
+              labels: ['domain-request', 'rejected']
+            });

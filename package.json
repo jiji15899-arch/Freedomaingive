@@ -4,10 +4,8 @@
   "description": "무료 서브도메인 제공 플랫폼 - GitHub + Cloudflare",
   "main": "index.html",
   "scripts": {
-    "dev": "wrangler pages dev .",
-    "deploy": "wrangler pages deploy .",
     "build": "echo 'No build required'",
-    "preview": "wrangler pages dev . --port 8788"
+    "pages:deploy": "echo 'Deployed via Cloudflare Pages Git integration'"
   },
   "keywords": [
     "domain",
@@ -23,6 +21,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/YOUR_USERNAME/free-domain.git"
+    "url": "https://github.com/jiji15899-arch/freedomaingive"
   }
 }

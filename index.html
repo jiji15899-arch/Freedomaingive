@@ -3,94 +3,388 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>무료 도메인 발급</title>
+    <title>무료 도메인 신청</title>
     <style>
-        /* 기존 스타일 유지하되 필요한 부분만 추가 */
-        body { font-family: sans-serif; background: linear-gradient(135deg, #667eea, #764ba2); padding: 20px; min-height: 100vh; }
-        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        h1 { text-align: center; color: #333; }
-        input, select, button { width: 100%; padding: 12px; margin-bottom: 10px; border: 2px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        button { background: #667eea; color: white; border: none; font-weight: bold; cursor: pointer; }
-        button:hover { background: #5a6fd6; }
-        .result { padding: 15px; border-radius: 8px; margin-top: 20px; display: none; }
-        .success { background: #d4edda; color: #155724; }
-        .error { background: #f8d7da; color: #721c24; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .domain-input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .domain-input-group input {
+            flex: 1;
+        }
+
+        .domain-extension {
+            background: #f5f5f5;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #667eea;
+            white-space: nowrap;
+        }
+
+        .nameservers {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .help-text {
+            font-size: 0.85em;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status-message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+        }
+
+        .status-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status-message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .features {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .features h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .features ul {
+            list-style: none;
+        }
+
+        .features li {
+            padding: 8px 0;
+            color: #666;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .github-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .github-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .github-link a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🌐 무료 도메인 발급</h1>
+        <h1>🌐 무료 도메인 신청</h1>
+        <p class="subtitle">원하는 서브도메인을 무료로 신청하세요</p>
+
         <form id="domainForm">
-            <label>서브도메인</label>
-            <div style="display:flex; gap:5px; margin-bottom:10px;">
-                <input type="text" id="subdomain" placeholder="mysite" required>
-                <input type="text" value=".yourdomain.com" readonly style="width: 150px; background: #eee;">
+            <div class="form-group">
+                <label for="domainName">도메인 이름</label>
+                <div class="domain-input-group">
+                    <input 
+                        type="text" 
+                        id="domainName" 
+                        name="domainName" 
+                        placeholder="yourname" 
+                        required
+                        pattern="[a-z0-9-]+"
+                    >
+                    <span class="domain-extension" id="domainExtension">.com</span>
+                </div>
+                <p class="help-text">영문 소문자, 숫자, 하이픈(-)만 사용 가능</p>
             </div>
 
-            <label>레코드 타입</label>
-            <select id="recordType">
-                <option value="A">A (IPv4)</option>
-                <option value="AAAA">AAAA (IPv6)</option>
-                <option value="CNAME">CNAME</option>
-                <option value="NS">NS</option>
-            </select>
+            <div class="form-group">
+                <label>네임서버 (최소 2개, 최대 4개)</label>
+                <div class="nameservers">
+                    <input 
+                        type="text" 
+                        name="ns1" 
+                        placeholder="ns1.yourhosting.com" 
+                        required
+                    >
+                    <input 
+                        type="text" 
+                        name="ns2" 
+                        placeholder="ns2.yourhosting.com" 
+                        required
+                    >
+                    <input 
+                        type="text" 
+                        name="ns3" 
+                        placeholder="ns3.yourhosting.com (선택)"
+                    >
+                    <input 
+                        type="text" 
+                        name="ns4" 
+                        placeholder="ns4.yourhosting.com (선택)"
+                    >
+                </div>
+                <p class="help-text">호스팅 제공업체의 네임서버를 입력하세요</p>
+            </div>
 
-            <label>값 입력 (최대 2개)</label>
-            <input type="text" id="val1" placeholder="값 1 (예: 192.168.0.1) - 필수" required>
-            <input type="text" id="val2" placeholder="값 2 (선택사항)">
+            <div class="form-group">
+                <label for="email">이메일 (선택)</label>
+                <input 
+                    type="text" 
+                    id="email" 
+                    name="email" 
+                    placeholder="your@email.com"
+                >
+                <p class="help-text">도메인 관련 알림을 받으실 이메일</p>
+            </div>
 
-            <label>이메일 (선택)</label>
-            <input type="email" id="email" placeholder="contact@example.com">
-
-            <button type="submit" id="submitBtn">발급받기</button>
+            <button type="submit" id="submitBtn">신청하기</button>
         </form>
-        <div id="result" class="result"></div>
+
+        <div id="statusMessage" class="status-message"></div>
+
+        <div class="features">
+            <h3>📋 제공 사항</h3>
+            <ul>
+                <li>완전 무료 서브도메인</li>
+                <li>무제한 사용기간</li>
+                <li>커스텀 네임서버 설정</li>
+                <li>즉시 발급 (자동 처리)</li>
+                <li>DNS 관리 자유</li>
+            </ul>
+        </div>
+
+        <div class="github-link">
+            <a href="#" id="statusLink" target="_blank">
+                내 신청 현황 확인하기 →
+            </a>
+        </div>
     </div>
 
     <script>
+        // ⚠️ 설정 - 본인의 정보로 수정하세요
+        const CONFIG = {
+            GITHUB_REPO: 'jiji15899-arch/free-domain',  // ← GitHub 아이디/저장소명으로 변경
+            DOMAIN_EXTENSION: '.com',               // ← 본인의 도메인으로 변경
+            GITHUB_TOKEN: '' // 비워두세요 (GitHub Actions가 자동 처리)
+        };
+
+        // 도메인 확장자 표시
+        document.getElementById('domainExtension').textContent = CONFIG.DOMAIN_EXTENSION;
+        document.getElementById('statusLink').href = `https://github.com/${CONFIG.GITHUB_REPO}/issues`;
+
         document.getElementById('domainForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            const result = document.getElementById('result');
             
-            btn.disabled = true;
-            btn.textContent = '처리 중...';
-            result.style.display = 'none';
+            const submitBtn = document.getElementById('submitBtn');
+            const statusMessage = document.getElementById('statusMessage');
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = '처리중...';
+            
+            const formData = new FormData(e.target);
+            const domainName = formData.get('domainName').toLowerCase();
+            const ns1 = formData.get('ns1');
+            const ns2 = formData.get('ns2');
+            const ns3 = formData.get('ns3');
+            const ns4 = formData.get('ns4');
+            const email = formData.get('email');
 
-            // 입력값 정리
-            const val1 = document.getElementById('val1').value.trim();
-            const val2 = document.getElementById('val2').value.trim();
-            const recordValues = [val1, val2].filter(v => v !== "");
+            // 네임서버 목록 생성
+            const nameservers = [ns1, ns2];
+            if (ns3) nameservers.push(ns3);
+            if (ns4) nameservers.push(ns4);
+
+            // GitHub Issue 생성
+            const issueTitle = `[도메인 신청] ${domainName}${CONFIG.DOMAIN_EXTENSION}`;
+            const issueBody = `
+## 도메인 신청 정보
+
+- **도메인**: ${domainName}${CONFIG.DOMAIN_EXTENSION}
+- **네임서버**: 
+${nameservers.map((ns, i) => `  - NS${i+1}: ${ns}`).join('\n')}
+${email ? `- **이메일**: ${email}` : ''}
+- **신청일시**: ${new Date().toLocaleString('ko-KR')}
+
+---
+
+**상태**: 🔄 검토중
+
+이 신청은 자동으로 처리됩니다. 잠시만 기다려주세요.
+            `.trim();
 
             try {
-                const res = await fetch('/api/register', {
+                const response = await fetch(`https://api.github.com/repos/${CONFIG.GITHUB_REPO}/issues`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(CONFIG.GITHUB_TOKEN && { 'Authorization': `token ${CONFIG.GITHUB_TOKEN}` })
+                    },
                     body: JSON.stringify({
-                        subdomain: document.getElementById('subdomain').value,
-                        recordType: document.getElementById('recordType').value,
-                        recordValues: recordValues,
-                        email: document.getElementById('email').value
+                        title: issueTitle,
+                        body: issueBody,
+                        labels: ['domain-request', 'pending']
                     })
                 });
-                const data = await res.json();
-                
-                result.style.display = 'block';
-                if (data.success) {
-                    result.className = 'result success';
-                    result.innerHTML = `✅ 성공! <b>${document.getElementById('subdomain').value}.yourdomain.com</b>이(가) 등록되었습니다.`;
+
+                if (response.ok) {
+                    const data = await response.json();
+                    statusMessage.className = 'status-message success';
+                    statusMessage.style.display = 'block';
+                    statusMessage.innerHTML = `
+                        <strong>✅ 신청이 완료되었습니다!</strong><br>
+                        도메인: <strong>${domainName}${CONFIG.DOMAIN_EXTENSION}</strong><br>
+                        <a href="${data.html_url}" target="_blank" style="color: #155724;">신청 현황 확인하기</a><br>
+                        <small>24시간 이내 자동으로 처리됩니다.</small>
+                    `;
+                    e.target.reset();
                 } else {
-                    throw new Error(data.error);
+                    throw new Error('GitHub API 요청 실패');
                 }
-            } catch (err) {
-                result.className = 'result error';
-                result.innerHTML = `❌ 오류: ${err.message}`;
-                result.style.display = 'block';
+            } catch (error) {
+                statusMessage.className = 'status-message error';
+                statusMessage.style.display = 'block';
+                statusMessage.innerHTML = `
+                    <strong>❌ 오류가 발생했습니다</strong><br>
+                    ${error.message}<br>
+                    <small>잠시 후 다시 시도해주세요.</small>
+                `;
             } finally {
-                btn.disabled = false;
-                btn.textContent = '발급받기';
+                submitBtn.disabled = false;
+                submitBtn.textContent = '신청하기';
             }
+        });
+
+        // 도메인 이름 실시간 검증
+        document.getElementById('domainName').addEventListener('input', (e) => {
+            e.target.value = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
         });
     </script>
 </body>
-</html>
+    </html>

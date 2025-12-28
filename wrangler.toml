@@ -1,8 +1,15 @@
-# Cloudflare Pages 배포는 Git 연동으로 자동 처리됩니다
-# 이 파일은 로컬 개발용입니다
+# Cloudflare Pages 배포 설정
+# 제작: 아백 (아로스)
+# 생성일: 2025-12-28
 
 name = "free-domain"
-compatibility_date = "2024-01-01"
+compatibility_date = "2025-12-28"
 
-# 로컬 개발 시에만 사용
-# 실제 배포는 Cloudflare Pages 대시보드에서 자동으로 처리됩니다
+[assets]
+directory = "."
+html_handling = "auto-trailing-slash"
+
+# 404 페이지 설정
+[[assets.fallback_routes]]
+pattern = "/*"
+destination = "/index.html"

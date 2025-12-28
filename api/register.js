@@ -9,7 +9,7 @@ const CONFIG = {
   ALLOWED_ORIGINS: [
     'https://jiwungum.dpdns.org',
     'https://www.jiwungum.dpdns.org'
-    'https://domain.jiwungum.dpdnz.org
+    'https://domain.jiwungum.dpdnz.org'
   ]
 };
 

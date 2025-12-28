@@ -7,8 +7,9 @@ const CONFIG = {
   ZONE_ID: 'your_zone_id_here',                 // Cloudflare Zone ID
   BASE_DOMAIN: 'yourdomain.com',                // 귀하의 도메인
   ALLOWED_ORIGINS: [
-    'https://yourdomain.com',
-    'https://your-github-pages.github.io'
+    'https://jiwungum.dpdns.org',
+    'https://www.jiwungum.dpdns.org'
+    'https://domain.jiwungum.dpdnz.org
   ]
 };
 

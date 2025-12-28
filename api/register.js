@@ -3,8 +3,8 @@
 
 // ============ 설정 (반드시 변경하세요) ============
 const CONFIG = {
-  CLOUDFLARE_API_TOKEN: 'your_api_token_here',  // Cloudflare API 토큰
-  ZONE_ID: 'your_zone_id_here',                 // Cloudflare Zone ID
+  CLOUDFLARE_API_TOKEN: 'YXMqlCtuuHwP11EG3lOBb2MQJ0esY2p3T7HGIzOF',  // Cloudflare API 토큰
+  ZONE_ID: 'd5c67a7f0c791d39dbce41c3aa5d2221',                 // Cloudflare Zone ID
   BASE_DOMAIN: 'com',                // 귀하의 도메인
   ALLOWED_ORIGINS: [
     'https://jiwungum.dpdns.org',

@@ -1,11 +1,28 @@
 {
-  "name": "free-domain-service",
+  "name": "free-domain-platform",
   "version": "1.0.0",
-  "main": "register.js",
+  "description": "무료 서브도메인 제공 플랫폼 - GitHub + Cloudflare",
+  "main": "index.html",
   "scripts": {
-    "deploy": "wrangler deploy"
+    "dev": "wrangler pages dev .",
+    "deploy": "wrangler pages deploy .",
+    "build": "echo 'No build required'",
+    "preview": "wrangler pages dev . --port 8788"
   },
+  "keywords": [
+    "domain",
+    "free",
+    "subdomain",
+    "cloudflare",
+    "github"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
   "devDependencies": {
-    "wrangler": "^3.22.0"
+    "wrangler": "^3.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_USERNAME/free-domain.git"
   }
 }

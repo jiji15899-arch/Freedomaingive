@@ -1,21 +1,16 @@
 name = "domain-register-api"
-type = "javascript"
-account_id = "da61a8675cc1395129fbcbfd1c48ed37"  # Cloudflare 계정 ID
-workers_dev = true
-route = ""
-zone_id = "d5c67a7f0c791d39dbce41c3aa5d2221"
+main = "register.js"
 compatibility_date = "2024-01-01"
 
-# KV Storage (도메인 로그 저장용 - 선택사항)
+# [중요] HTML 파일들을 워커와 함께 업로드하고 제공하기 위한 설정
+[assets]
+directory = "."
+binding = "ASSETS"
+
+# KV Storage (기존 설정 유지)
 [[kv_namespaces]]
 binding = "DOMAIN_LOG"
 id = "55ea199daf1b46f1b7869d544ed10c36"
 
-# 환경 변수 (민감한 정보는 wrangler secret 사용 권장)
 [vars]
 BASE_DOMAIN = "com"
-
-# 라우팅 설정
-[[routes]]
-pattern = "jiwungum.dpdns.org/api/*"
-zone_name = "jiwungum.dpdns.org"

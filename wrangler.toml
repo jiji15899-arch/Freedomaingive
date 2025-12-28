@@ -1,6 +1,6 @@
 name = "domain-register-api"
 type = "javascript"
-account_id = "your_account_id_here"  # Cloudflare 계정 ID
+account_id = "da61a8675cc1395129fbcbfd1c48ed37"  # Cloudflare 계정 ID
 workers_dev = true
 route = ""
 zone_id = ""
@@ -13,9 +13,9 @@ id = "your_kv_namespace_id_here"
 
 # 환경 변수 (민감한 정보는 wrangler secret 사용 권장)
 [vars]
-BASE_DOMAIN = "yourdomain.com"
+BASE_DOMAIN = "com"
 
 # 라우팅 설정
 [[routes]]
-pattern = "yourdomain.com/api/*"
-zone_name = "yourdomain.com"
+pattern = "jiwungum.dpdns.org/api/*"
+zone_name = "com"

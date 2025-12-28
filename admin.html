@@ -2,426 +2,80 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>도메인 관리 대시보드</title>
+    <title>관리자 대시보드</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f7fa;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        header {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-        }
-
-        h1 {
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .stat-card h3 {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-
-        .stat-card .number {
-            font-size: 32px;
-            font-weight: bold;
-            color: #667eea;
-        }
-
-        .controls {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
-
-        .controls input {
-            flex: 1;
-            padding: 10px;
-            border: 2px solid #e0e0e0;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-
-        .controls button {
-            padding: 10px 20px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .controls button:hover {
-            background: #5568d3;
-        }
-
-        .domain-list {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        thead {
-            background: #f8f9fa;
-        }
-
-        th {
-            padding: 15px;
-            text-align: left;
-            font-weight: 600;
-            color: #666;
-            border-bottom: 2px solid #e0e0e0;
-        }
-
-        td {
-            padding: 15px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        tbody tr:hover {
-            background: #f8f9fa;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .badge-a { background: #e3f2fd; color: #1976d2; }
-        .badge-aaaa { background: #f3e5f5; color: #7b1fa2; }
-        .badge-cname { background: #fff3e0; color: #f57c00; }
-        .badge-ns { background: #e8f5e9; color: #388e3c; }
-
-        .action-btn {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            margin-right: 5px;
-        }
-
-        .btn-view {
-            background: #e3f2fd;
-            color: #1976d2;
-        }
-
-        .btn-delete {
-            background: #ffebee;
-            color: #c62828;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-        }
-
-        .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #999;
-        }
-
-        .empty-state svg {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 20px;
-            opacity: 0.3;
-        }
+        body { font-family: sans-serif; background: #f5f7fa; padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #f8f9fa; }
+        button { padding: 5px 10px; cursor: pointer; }
+        .del-btn { background: #ffebee; color: #c62828; border: none; border-radius: 4px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>🎛️ 도메인 관리 대시보드</h1>
-            <p>발급된 모든 서브도메인을 관리하세요</p>
-        </header>
-
-        <div class="stats">
-            <div class="stat-card">
-                <h3>총 도메인 수</h3>
-                <div class="number" id="totalDomains">0</div>
+        <div class="card">
+            <h2>🔐 관리자 인증</h2>
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <input type="password" id="adminPw" placeholder="관리자 비밀번호 입력" style="padding: 10px; flex: 1;">
+                <button onclick="loadDomains()">로그인 및 조회</button>
             </div>
-            <div class="stat-card">
-                <h3>A 레코드</h3>
-                <div class="number" id="aRecords">0</div>
-            </div>
-            <div class="stat-card">
-                <h3>NS 레코드</h3>
-                <div class="number" id="nsRecords">0</div>
-            </div>
-            <div class="stat-card">
-                <h3>CNAME 레코드</h3>
-                <div class="number" id="cnameRecords">0</div>
-            </div>
-        </div>
-
-        <div class="controls">
-            <input 
-                type="text" 
-                id="searchInput" 
-                placeholder="도메인 검색..."
-            >
-            <button onclick="searchDomains()">🔍 검색</button>
-            <button onclick="loadDomains()">🔄 새로고침</button>
-        </div>
-
-        <div class="domain-list">
+            
+            <h3>도메인 목록</h3>
+            <div id="status"></div>
             <table>
-                <thead>
-                    <tr>
-                        <th>도메인</th>
-                        <th>타입</th>
-                        <th>값</th>
-                        <th>생성일</th>
-                        <th>작업</th>
-                    </tr>
-                </thead>
-                <tbody id="domainTableBody">
-                    <tr>
-                        <td colspan="5" class="loading">
-                            <div class="spinner"></div>
-                            <div>도메인 목록을 불러오는 중...</div>
-                        </td>
-                    </tr>
-                </tbody>
+                <thead><tr><th>도메인</th><th>타입</th><th>값</th><th>작업</th></tr></thead>
+                <tbody id="listBody"></tbody>
             </table>
         </div>
     </div>
 
     <script>
-        // ===== 설정 =====
-        const CONFIG = {
-            CLOUDFLARE_API_TOKEN: 'YXMqlCtuuHwP11EG3lOBb2MQJ0esY2p3T7HGIzOF',
-            ZONE_ID: 'd5c67a7f0c791d39dbce41c3aa5d2221',
-            BASE_DOMAIN: 'com'
-        };
-
-        let allDomains = [];
-
-        // ===== 도메인 목록 로드 =====
         async function loadDomains() {
-            try {
-                const response = await fetch(
-                    `https://api.cloudflare.com/client/v4/zones/${CONFIG.ZONE_ID}/dns_records?per_page=100`,
-                    {
-                        headers: {
-                            'Authorization': `Bearer ${CONFIG.CLOUDFLARE_API_TOKEN}`,
-                            'Content-Type': 'application/json'
-                        }
-                    }
-                );
+            const pw = document.getElementById('adminPw').value;
+            if(!pw) return alert('비밀번호를 입력하세요');
 
-                const data = await response.json();
-                
-                if (data.success) {
-                    allDomains = data.result.filter(record => 
-                        record.name.endsWith(CONFIG.BASE_DOMAIN) && 
-                        record.name !== CONFIG.BASE_DOMAIN
-                    );
-                    
-                    displayDomains(allDomains);
-                    updateStats(allDomains);
-                } else {
-                    showError('도메인 목록을 불러올 수 없습니다.');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                showError('API 요청 중 오류가 발생했습니다.');
-            }
-        }
-
-        // ===== 도메인 표시 =====
-        function displayDomains(domains) {
-            const tbody = document.getElementById('domainTableBody');
+            document.getElementById('status').textContent = '로딩 중...';
             
-            if (domains.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="5" class="empty-state">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="10"/>
-                                <line x1="12" y1="8" x2="12" y2="12"/>
-                                <line x1="12" y1="16" x2="12.01" y2="16"/>
-                            </svg>
-                            <h3>도메인이 없습니다</h3>
-                            <p>아직 발급된 도메인이 없습니다.</p>
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-
-            tbody.innerHTML = domains.map(domain => `
-                <tr>
-                    <td><strong>${domain.name}</strong></td>
-                    <td><span class="badge badge-${domain.type.toLowerCase()}">${domain.type}</span></td>
-                    <td><code>${domain.content}</code></td>
-                    <td>${new Date(domain.created_on).toLocaleDateString('ko-KR')}</td>
-                    <td>
-                        <button class="action-btn btn-view" onclick="viewDetails('${domain.id}')">
-                            👁️ 상세
-                        </button>
-                        <button class="action-btn btn-delete" onclick="deleteDomain('${domain.id}', '${domain.name}')">
-                            🗑️ 삭제
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        // ===== 통계 업데이트 =====
-        function updateStats(domains) {
-            document.getElementById('totalDomains').textContent = domains.length;
-            document.getElementById('aRecords').textContent = 
-                domains.filter(d => d.type === 'A').length;
-            document.getElementById('nsRecords').textContent = 
-                domains.filter(d => d.type === 'NS').length;
-            document.getElementById('cnameRecords').textContent = 
-                domains.filter(d => d.type === 'CNAME').length;
-        }
-
-        // ===== 도메인 검색 =====
-        function searchDomains() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = allDomains.filter(domain => 
-                domain.name.toLowerCase().includes(query) ||
-                domain.content.toLowerCase().includes(query)
-            );
-            displayDomains(filtered);
-        }
-
-        // 검색창 실시간 검색
-        document.getElementById('searchInput').addEventListener('input', searchDomains);
-
-        // ===== 도메인 상세 보기 =====
-        function viewDetails(recordId) {
-            const domain = allDomains.find(d => d.id === recordId);
-            if (domain) {
-                alert(`
-도메인 상세 정보:
-
-이름: ${domain.name}
-타입: ${domain.type}
-값: ${domain.content}
-TTL: ${domain.ttl}초
-프록시: ${domain.proxied ? '활성' : '비활성'}
-생성일: ${new Date(domain.created_on).toLocaleString('ko-KR')}
-수정일: ${new Date(domain.modified_on).toLocaleString('ko-KR')}
-                `);
-            }
-        }
-
-        // ===== 도메인 삭제 =====
-        async function deleteDomain(recordId, domainName) {
-            if (!confirm(`정말로 ${domainName}을(를) 삭제하시겠습니까?`)) {
-                return;
-            }
-
             try {
-                const response = await fetch(
-                    `https://api.cloudflare.com/client/v4/zones/${CONFIG.ZONE_ID}/dns_records/${recordId}`,
-                    {
-                        method: 'DELETE',
-                        headers: {
-                            'Authorization': `Bearer ${CONFIG.CLOUDFLARE_API_TOKEN}`,
-                            'Content-Type': 'application/json'
-                        }
-                    }
-                );
-
-                const data = await response.json();
+                const res = await fetch('/api/list', {
+                    headers: { 'X-Admin-Password': pw }
+                });
                 
-                if (data.success) {
-                    alert('도메인이 삭제되었습니다.');
-                    loadDomains();
-                } else {
-                    alert('삭제 실패: ' + (data.errors[0]?.message || '알 수 없는 오류'));
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('삭제 중 오류가 발생했습니다.');
+                if(res.status === 401) throw new Error('비밀번호가 틀렸습니다.');
+                const data = await res.json();
+                
+                const tbody = document.getElementById('listBody');
+                tbody.innerHTML = '';
+                
+                data.result.forEach(d => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${d.name}</td>
+                            <td>${d.type}</td>
+                            <td>${d.content}</td>
+                            <td><button class="del-btn" onclick="deleteDomain('${d.id}')">삭제</button></td>
+                        </tr>`;
+                });
+                document.getElementById('status').textContent = `총 ${data.result.length}개`;
+            } catch (e) {
+                document.getElementById('status').textContent = `오류: ${e.message}`;
             }
         }
 
-        // ===== 오류 표시 =====
-        function showError(message) {
-            const tbody = document.getElementById('domainTableBody');
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="5" style="text-align: center; padding: 40px; color: #c62828;">
-                        ⚠️ ${message}
-                    </td>
-                </tr>
-            `;
+        async function deleteDomain(id) {
+            if(!confirm('정말 삭제합니까?')) return;
+            const pw = document.getElementById('adminPw').value;
+            
+            await fetch('/api/delete', {
+                method: 'DELETE',
+                headers: { 'X-Admin-Password': pw, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id })
+            });
+            loadDomains(); // 목록 새로고침
         }
-
-        // ===== 페이지 로드시 도메인 목록 불러오기 =====
-        window.addEventListener('load', loadDomains);
     </script>
 </body>
 </html>
